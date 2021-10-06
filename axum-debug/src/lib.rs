@@ -94,10 +94,137 @@
 //! [`debug_handler`]: debug_handler
 //! [`debug_router`]: debug_router
 
+#![warn(
+    clippy::all,
+    clippy::dbg_macro,
+    clippy::todo,
+    clippy::mem_forget,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    missing_debug_implementations,
+    missing_docs
+)]
+#![deny(unreachable_pub, private_in_public)]
+#![forbid(unsafe_code)]
+
+use bytes::Bytes;
+use http::{Request, Response};
+use http_body::Body;
+use tower_service::Service;
+
 #[doc(hidden)]
 pub use axum_debug_macros;
 
 pub use crate::axum_debug_macros::{debug_handler, debug_router};
+
+/// Checks if provided service can be used with [`Router`].
+///
+/// This function is useful when debugging a [`Service`].
+///
+/// # Example
+/// ```rust,compile_fail
+/// use axum::{handler::get, Router};
+/// use axum_debug::{debug_handler, debug_router, check_service};
+/// use tower::util::BoxService;
+///
+/// #[tokio::main]
+/// async fn main() {
+///     let service = BoxService::new(get(handler));
+///
+///     check_service(&service);
+///
+///     let app = Router::new().route("/", service);
+///
+///     debug_router!(app);
+///
+///     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+///         .serve(app.into_make_service())
+///         .await
+///         .unwrap();
+/// }
+///
+/// #[debug_handler]
+/// async fn handler() -> &'static str {
+///     "Hello, world!"
+/// }
+/// ```
+///
+/// ```text
+/// error[E0277]: the trait bound `BoxService<Request<_>, Response<...>, Infallible>: Clone` is not satisfied
+///    --> main.rs:9:19
+///     |
+/// 9   |     check_service(&service);
+///     |                   ^^^^^^^^ the trait `Clone` is not implemented for `BoxService<Request<_>, Response<...>, Infallible>`
+/// ```
+///
+/// [`Router`]: axum::Router
+/// [`Service`]: tower_service::Service
+pub fn check_service<S, ReqBody, ResBody>(_service: &S)
+where
+    S: Service<Request<ReqBody>, Response = Response<ResBody>> + Clone + Send + Sync + 'static,
+    S::Error: Into<Box<dyn std::error::Error + Send + Sync>> + Send,
+    S::Future: Send,
+    ReqBody: Send + 'static,
+    ResBody: Body<Data = Bytes> + Send + Sync + 'static,
+    ResBody::Error: Into<Box<dyn std::error::Error + Send + Sync>>,
+{
+}
+
+/// Checks and returns if provided service can be used with [`Router`].
+///
+/// This function is useful when debugging a [`Service`].
+///
+/// # Example
+/// ```rust,compile_fail
+/// use axum::{handler::get, Router};
+/// use axum_debug::{debug_handler, debug_router, debug_service};
+/// use tower::util::BoxService;
+///
+/// #[tokio::main]
+/// async fn main() {
+///     let service = BoxService::new(get(handler));
+///
+///     let app = Router::new().route("/", debug_service(service));
+///
+///     debug_router!(app);
+///
+///     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+///         .serve(app.into_make_service())
+///         .await
+///         .unwrap();
+/// }
+///
+/// #[debug_handler]
+/// async fn handler() -> &'static str {
+///     "Hello, world!"
+/// }
+/// ```
+///
+/// ```text
+/// error[E0277]: the trait bound `BoxService<Request<_>, Response<...>, Infallible>: Clone` is not satisfied
+///    --> main.rs:9:54
+///     |
+/// 9   |     let app = Router::new().route("/", debug_service(service));
+///     |                                                      ^^^^^^^ the trait `Clone` is not implemented for
+///                                                                    `BoxService<Request<_>, Response<...>, Infallible>`
+/// ```
+///
+/// [`Router`]: axum::Router
+/// [`Service`]: tower_service::Service
+pub fn debug_service<S, ReqBody, ResBody>(service: S) -> S
+where
+    S: Service<Request<ReqBody>, Response = Response<ResBody>> + Clone + Send + Sync + 'static,
+    S::Error: Into<Box<dyn std::error::Error + Send + Sync>> + Send,
+    S::Future: Send,
+    ReqBody: Send + 'static,
+    ResBody: Body<Data = Bytes> + Send + Sync + 'static,
+    ResBody::Error: Into<Box<dyn std::error::Error + Send + Sync>>,
+{
+    check_service(&service);
+
+    service
+}
 
 #[cfg(test)]
 mod tests {

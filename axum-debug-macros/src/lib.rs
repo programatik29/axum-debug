@@ -2,6 +2,20 @@
 //!
 //! [`axum-debug`]: https://crates.io/crates/axum-debug
 
+#![warn(
+    clippy::all,
+    clippy::dbg_macro,
+    clippy::todo,
+    clippy::mem_forget,
+    rust_2018_idioms,
+    future_incompatible,
+    nonstandard_style,
+    missing_debug_implementations,
+    missing_docs
+)]
+#![deny(unreachable_pub, private_in_public)]
+#![forbid(unsafe_code)]
+
 use proc_macro::TokenStream;
 
 /// Generates better error messages when applied to a handler function.
@@ -226,7 +240,7 @@ mod debug {
         let ident = parse_macro_input!(input as Ident);
 
         let expanded = quote! {
-            let #ident = #ident.boxed();
+            let #ident = axum::Router::boxed(#ident);
         };
 
         expanded.into()
