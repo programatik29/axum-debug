@@ -335,9 +335,37 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Procedural macros for [`axum-debug`] crate.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! [`axum-debug`]: https://crates.io/crates/axum-debug</span>
+
+<span class="attribute">#![<span class="ident">warn</span>(
+    <span class="ident">clippy::all</span>,
+    <span class="ident">clippy::dbg_macro</span>,
+    <span class="ident">clippy::todo</span>,
+    <span class="ident">clippy::mem_forget</span>,
+    <span class="ident">rust_2018_idioms</span>,
+    <span class="ident">future_incompatible</span>,
+    <span class="ident">nonstandard_style</span>,
+    <span class="ident">missing_debug_implementations</span>,
+    <span class="ident">missing_docs</span>
+)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">unreachable_pub</span>, <span class="ident">private_in_public</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
 
@@ -563,7 +591,7 @@
         <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">input</span> <span class="kw">as</span> <span class="ident">Ident</span>);
 
         <span class="kw">let</span> <span class="ident">expanded</span> <span class="op">=</span> <span class="macro">quote!</span> {
-            <span class="kw">let</span> #<span class="ident">ident</span> <span class="op">=</span> #<span class="ident">ident</span>.<span class="ident">boxed</span>();
+            <span class="kw">let</span> #<span class="ident">ident</span> <span class="op">=</span> <span class="ident">axum::Router::boxed</span>(#<span class="ident">ident</span>);
         };
 
         <span class="ident">expanded</span>.<span class="ident">into</span>()

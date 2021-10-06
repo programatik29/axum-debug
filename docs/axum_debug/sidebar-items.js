@@ -1,1 +1,1 @@
-initSidebarItems({"attr":[["debug_handler","Generates better error messages when applied to a handler function."]],"macro":[["debug_router","Shortens error message when applied to a `Router`."]]});
+initSidebarItems({"attr":[["debug_handler","Generates better error messages when applied to a handler function."]],"fn":[["check_service","Checks if provided service can be used with `Router`."],["debug_service","Checks and returns if provided service can be used with `Router`."]],"macro":[["debug_router","Shortens error message when applied to a `Router`."]]});
