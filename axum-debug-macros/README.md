@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/crates/l/axum-debug-macros)](https://choosealicense.com/licenses/mit/)
 [![Crates.io](https://img.shields.io/crates/v/axum-debug-macros)](https://crates.io/crates/axum-debug-macros)
-[![Docs - Master](https://img.shields.io/badge/docs-master-blue)](https://programatik29.github.io/axum-debug-macros/docs/axum_debug_macros/)
+[![Docs - Master](https://img.shields.io/badge/docs-master-blue)](https://programatik29.github.io/axum-debug/docs/axum_debug_macros/)
 [![Docs - Stable](https://img.shields.io/crates/v/axum-debug-macros?color=blue&label=docs)](https://docs.rs/axum-debug-macros/)
 
 
