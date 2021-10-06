@@ -14,6 +14,8 @@ case you make a mistake.
 
 ## Usage example
 
+Will fail with a better error message:
+
 ```rust
 use axum::{handler::get, Router};
 use axum_debug::{debug_handler, debug_router};
@@ -39,6 +41,10 @@ async fn handler() -> bool {
 ## Safety
 
 This crate uses `#![forbid(unsafe_code)]` to ensure everything is implemented in 100% safe Rust.
+
+## Performance
+
+Macros in this crate have no effect when using release profile. (eg. `cargo build --release`)
 
 ## License
 

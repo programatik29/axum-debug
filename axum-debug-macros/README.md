@@ -12,6 +12,10 @@ Procedural macros for [`axum-debug`] crate.
 
 This crate uses `#![forbid(unsafe_code)]` to ensure everything is implemented in 100% safe Rust.
 
+## Performance
+
+This crate have no effect when using release profile. (eg. `cargo build --release`)
+
 ## License
 
 This project is licensed under the [MIT license](LICENSE).
